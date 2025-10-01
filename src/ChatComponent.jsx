@@ -215,10 +215,27 @@ const ChatComponent = ({ user, onLogout, onConfigEditorClick }) => {
 
         // Initialize AgentCore client if enabled
         if (agentCoreConfig && agentCoreConfig.enabled && agentCoreConfig.region) {
+          const bearerToken = session.tokens?.accessToken?.toString();
           const newAgentCoreClient = new BedrockAgentCoreClient({
             region: agentCoreConfig.region,
-            credentials: session.credentials
+            credentials: {
+              accessKeyId: 'dummy',
+              secretAccessKey: 'dummy'
+            }
           });
+          
+          // Add middleware to replace SigV4 with bearer token
+          newAgentCoreClient.middlewareStack.add(
+            (next) => async (args) => {
+              args.request.headers['Authorization'] = `Bearer ${bearerToken}`;
+              delete args.request.headers['authorization'];
+              delete args.request.headers['x-amz-date'];
+              delete args.request.headers['x-amz-security-token'];
+              return next(args);
+            },
+            { step: 'finalizeRequest', priority: 'high' }
+          );
+          
           setAgentCoreClient(newAgentCoreClient);
           if (agentCoreConfig.agentName && agentCoreConfig.agentName.trim()) {
             setAgentName({ value: agentCoreConfig.agentName });
@@ -387,7 +404,14 @@ const ChatComponent = ({ user, onLogout, onConfigEditorClick }) => {
           console.log('AgentCore raw response:', responseBody);
           
           const parsedResponse = JSON.parse(responseBody);
-          const responseText = parsedResponse.result || "Sorry, I couldn't process your request.";
+          let responseText = "Sorry, I couldn't process your request.";
+          
+          if (parsedResponse.result && parsedResponse.result.content) {
+            responseText = parsedResponse.result.content.map(item => item.text).join('');
+          } else if (parsedResponse.result) {
+            responseText = parsedResponse.result;
+          }
+          
           agentMessage = { text: responseText, sender: agentName.value };
         } else {
           throw new Error("No agent client available");
