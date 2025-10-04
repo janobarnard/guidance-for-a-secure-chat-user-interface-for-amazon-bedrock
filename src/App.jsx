@@ -3,11 +3,43 @@ import { useState, useEffect } from 'react';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { TopNavigation } from "@cloudscape-design/components";
 import PropTypes from 'prop-types';
+import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import './App.css';
 
 import ChatComponent from './ChatComponent';
 import ConfigComponent from './ConfigComponent';
+
+/**
+ * Default configuration for the application
+ * Pre-configured with hardcoded AWS credentials and settings
+ */
+const DEFAULT_CONFIG = {
+  cognito: {
+    userPoolId: 'eu-west-1_B7QPgod64',
+    userPoolClientId: '7m3ufk1rae8cj97daqnpas4asv',
+    identityPoolId: 'eu-west-1:fe48aae0-ab46-43bf-a4a3-0c79c2c314da',
+    region: 'eu-west-1'
+  },
+  bedrock: {
+    agentName: '',
+    agentId: '',
+    agentAliasId: '',
+    region: ''
+  },
+  strands: {
+    enabled: false,
+    lambdaArn: '',
+    agentName: 'Strands Agent',
+    region: ''
+  },
+  agentcore: {
+    enabled: true,
+    agentArn: 'arn:aws:bedrock-agentcore:us-east-1:821595636116:runtime/beod_agent_dev-uA38cg8hsF',
+    agentName: 'BEOD',
+    region: 'us-east-1'
+  }
+};
 
 /**
  * Main App component that manages the application state and routing
@@ -23,12 +55,40 @@ function App() {
 
   /**
    * Effect hook to check for stored configuration in localStorage
+   * If no configuration exists, initializes with default configuration
    * Updates the configuration state when editing mode changes
    */
   useEffect(() => {
     const storedConfig = localStorage.getItem('appConfig');
     if (storedConfig && !isEditingConfig) {
       //setBerockConfig(JSON.parse(storedConfig).bedrock);
+      const parsedConfig = JSON.parse(storedConfig);
+      // Configure Amplify with stored config
+      Amplify.configure({
+        Auth: {
+          Cognito: {
+            region: parsedConfig.cognito.region,
+            userPoolId: parsedConfig.cognito.userPoolId,
+            userPoolClientId: parsedConfig.cognito.userPoolClientId,
+            identityPoolId: parsedConfig.cognito.identityPoolId
+          },
+        }
+      });
+      setIsConfigured(true);
+    } else if (!storedConfig && !isEditingConfig) {
+      // Initialize with default configuration if no config exists
+      localStorage.setItem('appConfig', JSON.stringify(DEFAULT_CONFIG));
+      // Configure Amplify with default config
+      Amplify.configure({
+        Auth: {
+          Cognito: {
+            region: DEFAULT_CONFIG.cognito.region,
+            userPoolId: DEFAULT_CONFIG.cognito.userPoolId,
+            userPoolClientId: DEFAULT_CONFIG.cognito.userPoolClientId,
+            identityPoolId: DEFAULT_CONFIG.cognito.identityPoolId
+          },
+        }
+      });
       setIsConfigured(true);
     }
   }, [isEditingConfig]);
