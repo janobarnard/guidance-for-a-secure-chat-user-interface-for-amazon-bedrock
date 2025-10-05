@@ -29,10 +29,9 @@ import './ChatComponent.css';
  * @param {Object} props - Component properties
  * @param {Object} props.user - Current authenticated user information
  * @param {Function} props.onLogout - Callback handler for logout action
- * @param {Function} props.onConfigEditorClick - Callback for configuration editor
  * @returns {JSX.Element} The chat interface
  */
-const ChatComponent = ({ user, onLogout, onConfigEditorClick }) => {
+const ChatComponent = ({ user, onLogout }) => {
   // AWS Bedrock client instance for agent communication
   const [bedrockClient, setBedrockClient] = useState(null);
   // AWS Lambda client for Strands agent communication
@@ -468,37 +467,14 @@ const ChatComponent = ({ user, onLogout, onConfigEditorClick }) => {
                   disableUtilityCollapse: true,
                   onClick: () => createNewSession()
                 },
-                //This is the settings handler
+                //Utility to clear local storage and reset the experience
                 {
-                  type: "menu-dropdown",
-                  iconName: "settings",
-                  ariaLabel: "Settings",
-                  title: "Settings",
+                  type: "button",
+                  iconName: "remove",
+                  title: "Clear settings and local storage",
+                  ariaLabel: "Clear settings and local storage",
                   disableUtilityCollapse: true,
-                  onItemClick: ({ detail }) => {
-                    switch (detail.id) {
-                      case "edit-settings":
-                        onConfigEditorClick();
-                        break;
-                      case "clear-settings":
-                        handleClearData();
-                        break;
-                    }
-                  },
-                  items: [
-                    {
-                      id: "clear-settings",
-                      type: "button",
-                      iconName: "remove",
-                      text: "Clear settings and local storage",
-                    },
-                    {
-                      id: "edit-settings",
-                      text: "Edit Settings",
-                      iconName: "edit",
-                      type: "icon-button",
-                    }
-                  ]
+                  onClick: handleClearData
                 },
                 //This is the user session menu options
                 {
@@ -649,8 +625,7 @@ const ChatComponent = ({ user, onLogout, onConfigEditorClick }) => {
 
 ChatComponent.propTypes = {
   user: PropTypes.object.isRequired,
-  onLogout: PropTypes.func.isRequired,
-  onConfigEditorClick: PropTypes.func.isRequired
+  onLogout: PropTypes.func.isRequired
 };
 
 export default ChatComponent;
