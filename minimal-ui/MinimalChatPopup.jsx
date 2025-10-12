@@ -38,10 +38,13 @@ const generateSessionId = () => {
   return `agentcore-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
+const DEFAULT_AGENTCORE_RUNTIME_ARN = 'arn:aws:bedrock-agentcore:us-east-1:821595636116:runtime/beod_agent_dev-uA38cg8hsF';
+const DEFAULT_AGENTCORE_REGION = 'us-east-1';
+
 const MinimalChatPopup = ({
   bearerToken,
-  agentRuntimeArn,
-  agentRegion,
+  agentRuntimeArn = DEFAULT_AGENTCORE_RUNTIME_ARN,
+  agentRegion = DEFAULT_AGENTCORE_REGION,
   headerText = 'Agent Assistant',
   welcomeMessage = 'How can I help you today?',
   className
@@ -168,8 +171,8 @@ const MinimalChatPopup = ({
 
 MinimalChatPopup.propTypes = {
   bearerToken: PropTypes.string.isRequired,
-  agentRuntimeArn: PropTypes.string.isRequired,
-  agentRegion: PropTypes.string.isRequired,
+  agentRuntimeArn: PropTypes.string,
+  agentRegion: PropTypes.string,
   headerText: PropTypes.string,
   welcomeMessage: PropTypes.string,
   className: PropTypes.string

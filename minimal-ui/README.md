@@ -19,8 +19,8 @@ export default function Example({ token }) {
   return (
     <MinimalChatPopup
       bearerToken={token}
-      agentRegion="us-west-2"
-      agentRuntimeArn="arn:aws:bedrock:us-west-2:123456789012:agent-runtime/example"
+      agentRegion="us-east-1"
+      agentRuntimeArn="arn:aws:bedrock-agentcore:us-east-1:821595636116:runtime/beod_agent_dev-uA38cg8hsF"
       headerText="AgentCore Assistant"
       welcomeMessage="Hi there! Ask me anything about your workloads."
     />
