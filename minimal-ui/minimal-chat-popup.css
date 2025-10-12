@@ -1,0 +1,90 @@
+.minimal-chat {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  font-family: var(--amplify-fonts-default, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+}
+
+.minimal-chat__toggle {
+  border: none;
+  border-radius: 999px;
+  background: #1a73e8;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.minimal-chat__toggle:hover,
+.minimal-chat__toggle:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.minimal-chat__window {
+  width: min(420px, 90vw);
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.minimal-chat__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  font-weight: 600;
+  background: linear-gradient(135deg, #1a73e8, #6c63ff);
+  color: #fff;
+}
+
+.minimal-chat__header button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.minimal-chat__body {
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
+  background: #f9fafb;
+  display: flex;
+}
+
+.minimal-chat__body .amplify-flex {
+  flex: 1;
+}
+
+.minimal-chat__body .amplify-scrollview {
+  max-height: calc(70vh - 7rem);
+}
+
+@media (max-width: 480px) {
+  .minimal-chat {
+    right: 1rem;
+    left: 1rem;
+    align-items: stretch;
+  }
+
+  .minimal-chat__window {
+    width: 100%;
+    max-height: 80vh;
+  }
+}
