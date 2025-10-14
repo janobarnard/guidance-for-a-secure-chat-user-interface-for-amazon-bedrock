@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { TopNavigation } from "@cloudscape-design/components";
-import PropTypes from 'prop-types';
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import './App.css';
@@ -136,7 +135,5 @@ const AuthenticatedComponent = () => {
     
   );
 }
-
-AuthenticatedComponent.propTypes = {};
 
 export default App;
